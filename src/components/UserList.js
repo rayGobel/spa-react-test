@@ -1,10 +1,16 @@
 import React from 'react';
 import PostButton from './PostButton';
 
-function UserList({ users, seeUserPost }) {
+function AlbumButton({ user, onClick }) {
+  return (
+    <a href="#" onClick={(ev) => { ev.preventDefault(); onClick(user); }}>Albums</a>
+  );
+}
+
+function UserList({ users, seeUserPost, seeUserAlbum }) {
   const listItems = users.map(user =>
     <li key={user.id}>
-    { user.id } - { user.name } | <PostButton user={user} onClick={seeUserPost} />
+    { user.id } - { user.name } | <PostButton user={user} onClick={seeUserPost} /> | <AlbumButton user={user} onClick={seeUserAlbum} />
     </li>
   );
 
