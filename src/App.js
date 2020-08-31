@@ -60,12 +60,16 @@ function App() {
   }, [users]);
 
   return (
-    <div className="App">
-      <nav>
-        <a href="#" onClick={ () => viewUserList(setAppState) }>Home</a>
+    <div className="App container">
+      <nav className="navbar" role="navigation">
+        <div className="navbar-menu">
+          <div className="navbar-start">
+            <a href="#" className="navbar-item" onClick={ () => viewUserList(setAppState) }>Home</a>
+          </div>
+        </div>
       </nav>
 
-      <main>
+      <main className="content is-medium">
 
         { appState === APP_STATE.SHOWING_USER_LIST ?
           <div className="user__list columns">

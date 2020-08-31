@@ -1,16 +1,23 @@
 import React from 'react';
 
 function PictureList({ pictures }) {
+  console.log(pictures);
   const itemList = pictures.map(picture =>
-    <li key={ picture.id }>
-      <h1>
-        { picture.id } - { picture.title }
-      </h1>
-      <img src={picture.thumbnailUrl} alt={ picture.title } />
-    </li>
+    <div className="columns">
+      <div className="column box mb-3">
+        <div className="media" key={ picture.id }>
+          <div className="media-left">
+            <img src={picture.thumbnailUrl} alt={ picture.title } />
+          </div>
+          <div className="media-content">
+            { picture.title }
+          </div>
+        </div>
+      </div>
+    </div>
   );
 
-  return (<ol>{ itemList }</ol>);
+  return (<div className="my-3">{ itemList }</div>);
 };
 
 export default PictureList;

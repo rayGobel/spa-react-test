@@ -10,12 +10,19 @@ function AlbumButton({ user, onClick }) {
 function UserList({ users, seeUserPost, seeUserAlbum }) {
   const listItems = users.map(user =>
     <li key={user.id}>
-    { user.id } - { user.name } | <PostButton user={user} onClick={seeUserPost} /> | <AlbumButton user={user} onClick={seeUserAlbum} />
+      <div className="columns">
+        <div className="column is-four-fifth">
+          <p>{ user.name }</p>
+        </div>
+        <div className="column">
+          <PostButton user={user} onClick={seeUserPost} /> | <AlbumButton user={user} onClick={seeUserAlbum} />
+        </div>
+      </div>
     </li>
   );
 
   return (
-    <ul>{ listItems }</ul>
+    <ol>{ listItems }</ol>
   )
 }
 

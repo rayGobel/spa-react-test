@@ -19,26 +19,39 @@ function postListItems(posts, ctx) {
 
   const listItems = posts.map(post =>
     <li key={post.id}>
-      <h1>
-        { post.id } - { post.title } | <a href="#" onClick={() => seePostDetail(post, { setComments, setPostDetail, setCompState })}>view</a>
-      </h1>
+      <div class="columns">
+        <div class="column">
+          <a href="#" onClick={() => seePostDetail(post, { setComments, setPostDetail, setCompState })}>{ post.title }</a>
+        </div>
+      </div>
     </li>
   );
 
-  return listItems;
+  return (
+    <ol>
+      {listItems}
+    </ol>
+  );
 };
 
 function renderComments(comments) {
+  console.log(comments);
   const commentList = comments.map(comment =>
-    <li key={comment.id}>
-      <h2>
+    <div className="box" key={comment.id}>
+      <h4>
         From: { comment.name } ({ comment.email })
-      </h2>
+      </h4>
       <p>{ comment.body }</p>
-    </li>
+    </div>
   );
 
-  return (<ul>{ commentList }</ul>);
+  return (
+    <div className="mt-6 pl-6">
+      <h3>Comments</h3>
+
+      { commentList }
+    </div>
+  )
 };
 
 function renderPostDetail(post) {
@@ -58,13 +71,18 @@ function PostList({ posts }) {
 
   if (compState === COMP_STATE.SHOWING_POST_LIST) {
     const listItems = postListItems(lPosts, { setComments, setPostDetail, setCompState });
-    return (<ul>{ listItems }</ul>);
+    return listItems;
   }
 
   if (compState === COMP_STATE.SHOWING_POST_DETAIL) {
     const elPostDetail = renderPostDetail(postDetail);
     const elCommentList = renderComments(comments);
-    return (<div>{ elPostDetail } { elCommentList }</div>);
+    return (
+      <div className="my-6">
+        { elPostDetail }
+        { elCommentList }
+      </div>
+    );
   }
 
 }
