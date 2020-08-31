@@ -71,6 +71,12 @@ function updatePost(postId, jsonFormData) {
     .then(response => response.json())
 };
 
+function deletePost(postId) {
+  return fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`, {
+    method: 'DELETE',
+  });
+};
+
 const api = {
   fetchUsers,
   fetchUserPosts,
@@ -79,6 +85,7 @@ const api = {
   fetchPostComments,
   createNewPost,
   updatePost,
+  deletePost,
 };
 
 export default api;

@@ -6,6 +6,7 @@ const COMP_STATE = {
   SHOWING_POST_DETAIL: 'showingPostDetail',
   SHOWING_NEW_POST_FORM: 'showingNewPostForm',
   SHOWING_EDIT_POST_FORM: 'showingEditPostForm',
+  SHOWING_DELETE_PROMPT: 'showingDeletePostPrompt',
   LOADING: 'loading',
 };
 
@@ -77,6 +78,11 @@ function createNewPost({ setCompState }) {
   setCompState(COMP_STATE.SHOWING_NEW_POST_FORM);
 };
 
+function deletePostDetail(post, { setPostDetail, setCompState }) {
+  setPostDetail(post);
+  setCompState(COMP_STATE.SHOWING_DELETE_PROMPT);
+};
+
 function postListItems(posts, ctx) {
   const { setComments, setPostDetail, setCompState } = ctx;
 
@@ -87,7 +93,8 @@ function postListItems(posts, ctx) {
           <a href="#" onClick={() => seePostDetail(post, { setComments, setPostDetail, setCompState })}>{ post.title }</a>
         </div>
         <div className="column">
-          <a href="#" onClick={() => editPostDetail(post, { setPostDetail, setCompState })}>edit</a>
+          <a href="#" onClick={() => editPostDetail(post, { setPostDetail, setCompState })}>edit</a> |
+          <a href="#" onClick={() => deletePostDetail(post, { setPostDetail, setCompState })}> delete</a>
         </div>
       </div>
     </li>
@@ -140,11 +147,17 @@ function handleCreateNewPost(newPost, ctx) {
 };
 
 function handleUpdatePost(updatedPost, ctx) {
-  console.log(updatedPost);
   const { setCompState, setNotifState } = ctx;
   setCompState(COMP_STATE.LOADING);
   return api.updatePost(updatedPost.id, updatedPost)
     .then((updatedPost) => setNotifState({ state: NOTIFICATION_STATE.SHOW, message: `Successfully updated post with ID: ${updatedPost.id}` }))
+    .then(() => setCompState(COMP_STATE.SHOWING_POST_LIST));
+};
+
+function handleDeletePost(post, ctx) {
+  const { setCompState, setNotifState } = ctx;
+  return api.deletePost(post.id)
+    .then(() => setNotifState({ state: NOTIFICATION_STATE.SHOW, message: `Successfully deleted post with ID: ${post.id}` }))
     .then(() => setCompState(COMP_STATE.SHOWING_POST_LIST));
 };
 
@@ -220,6 +233,26 @@ function PostList({ user, posts }) {
       />);
   };
 
+  if (compState === COMP_STATE.SHOWING_DELETE_PROMPT) {
+    content = (
+      <div>
+        <h1 className="is-size-4">
+          Are you sure ?
+        </h1>
+        <p>This will delete post: <span className="has-text-weight-medium">{ postDetail.title }</span></p>
+
+        <div className="field is-grouped">
+          <div className="control">
+            <button className="button is-link is-danger" onClick={() => handleDeletePost(postDetail, { setCompState, setNotifState })}>Submit</button>
+          </div>
+          <div className="control">
+            <button className="button is-link is-light" onClick={() => { setCompState(COMP_STATE.SHOWING_POST_LIST); setPostDetail({}) }}>Cancel</button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   if (compState === COMP_STATE.LOADING) {
     return (
       <div className="columns">
@@ -232,7 +265,15 @@ function PostList({ user, posts }) {
     );
   }
 
-  return (<div>{ notification }{ content }</div>);
+  return (
+    <div>
+      { notification }
+      <div>
+        { user.name } Posts
+      </div>
+      { content }
+    </div>
+  );
 }
 
 export default PostList;
