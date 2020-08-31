@@ -4,7 +4,7 @@ import 'bulma/css/bulma.css';
 import UserList from './components/UserList';
 import Album from './components/Album';
 import PictureList from './components/PictureList';
-import PostList from './components/PostList';
+import Posts from './components/Posts';
 import api from './service/api';
 
 const APP_STATE = {
@@ -81,7 +81,7 @@ function App() {
 
         { appState === APP_STATE.SHOWING_USER_POSTS ?
           <div className="user__posts">
-            <PostList posts={posts} />
+            <Posts posts={posts} />
           </div> : ''
         }
 
