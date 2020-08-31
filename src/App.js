@@ -5,6 +5,7 @@ import UserList from './components/UserList';
 import Album from './components/Album';
 import PictureList from './components/PictureList';
 import PostList from './components/PostList';
+import api from './service/api';
 
 const APP_STATE = {
   INIT: 'init',
@@ -16,68 +17,32 @@ const APP_STATE = {
   SHOWING_ALBUM_ENTRIES: 'showAlbumEntries',
 };
 
-function fetchUsers() {
-  const url = `https://jsonplaceholder.typicode.com/users`;
-  return fetch(url)
-    .then(res => res.json())
-    .then(res => res);
-};
-
-function fetchUserPosts(userId) {
-  if (!userId) {
-    const ErrNoUserId = new Error('No User ID specified for request: fetchPosts');
-    return Promise.reject(ErrNoUserId);
-  }
-
-  const url = `https://jsonplaceholder.typicode.com/posts?userId=${userId}`;
-  return fetch(url)
-    .then(res => res.json());
-};
-
-function fetchUserAlbum(userId) {
-  if (!userId) {
-    const ErrNoUserId = new Error('No User ID specified for request: fetchAlbums');
-    return Promise.reject(ErrNoUserId);
-  }
-
-  const url = `https://jsonplaceholder.typicode.com/albums?userId=${userId}`;
-  return fetch(url)
-    .then(res => res.json());
-};
-
-function fetchAlbumDetail(albumId) {
-  if (!albumId) {
-    const ErrNoAlbumId = new Error('No Album ID specified for request: fetchAlbumDetail');
-    return Promise.reject(ErrNoAlbumId);
-  }
-
-  const url = `https://jsonplaceholder.typicode.com/albums/${albumId}/photos`;
-  return fetch(url)
-    .then(res => res.json());
-};
-
 function updateUsers({ setUsers }) {
-  return fetchUsers()
+  return api.fetchUsers()
     .then(users => setUsers(users));
 };
 
 function handleSeeUserPost(user, { setPosts, setAppState }) {
-  return fetchUserPosts(user.id)
+  return api.fetchUserPosts(user.id)
     .then(userPosts => setPosts(userPosts))
     .then(() => setAppState(APP_STATE.SHOWING_USER_POSTS));
 };
 
 function handleSeeUserAlbum(user, { setAlbum, setAppState }) {
-  return fetchUserAlbum(user.id)
+  return api.fetchUserAlbum(user.id)
     .then(album => setAlbum(album))
     .then(() => setAppState(APP_STATE.SHOWING_USER_ALBUMS));
 };
 
 function handleSeeAlbumDetail(albumEntry, { setAlbumPictures, setAppState }) {
-  return fetchAlbumDetail(albumEntry.id)
+  return api.fetchAlbumDetail(albumEntry.id)
     .then(pictures => setAlbumPictures(pictures))
     .then(() => setAppState(APP_STATE.SHOWING_ALBUM_ENTRIES));
-}
+};
+
+function viewUserList(setAppState) {
+  setAppState(APP_STATE.SHOWING_USER_LIST);
+};
 
 function App() {
 
@@ -97,6 +62,10 @@ function App() {
 
   return (
     <div className="App">
+      <nav>
+        <a href="#" onClick={ () => viewUserList(setAppState) }>Home</a>
+      </nav>
+
       <main>
 
         { appState === APP_STATE.SHOWING_USER_LIST ?

@@ -1,5 +1,48 @@
-const api = {
+function fetchUsers() {
+  const url = `https://jsonplaceholder.typicode.com/users`;
+  return fetch(url)
+    .then(res => res.json())
+    .then(res => res);
+};
 
+function fetchUserPosts(userId) {
+  if (!userId) {
+    const ErrNoUserId = new Error('No User ID specified for request: fetchPosts');
+    return Promise.reject(ErrNoUserId);
+  }
+
+  const url = `https://jsonplaceholder.typicode.com/posts?userId=${userId}`;
+  return fetch(url)
+    .then(res => res.json());
+};
+
+function fetchUserAlbum(userId) {
+  if (!userId) {
+    const ErrNoUserId = new Error('No User ID specified for request: fetchAlbums');
+    return Promise.reject(ErrNoUserId);
+  }
+
+  const url = `https://jsonplaceholder.typicode.com/albums?userId=${userId}`;
+  return fetch(url)
+    .then(res => res.json());
+};
+
+function fetchAlbumDetail(albumId) {
+  if (!albumId) {
+    const ErrNoAlbumId = new Error('No Album ID specified for request: fetchAlbumDetail');
+    return Promise.reject(ErrNoAlbumId);
+  }
+
+  const url = `https://jsonplaceholder.typicode.com/albums/${albumId}/photos`;
+  return fetch(url)
+    .then(res => res.json());
+};
+
+const api = {
+  fetchUsers,
+  fetchUserPosts,
+  fetchUserAlbum,
+  fetchAlbumDetail,
 };
 
 export default api;
