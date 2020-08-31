@@ -49,12 +49,24 @@ function fetchPostComments(postId) {
     .then(res => res.json());
 };
 
+function createNewPost(jsonFormData) {
+  return fetch('https://jsonplaceholder.typicode.com/posts', {
+    method: 'POST',
+    body: JSON.stringify(jsonFormData),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8"
+    }
+  })
+  .then(response => response.json())
+};
+
 const api = {
   fetchUsers,
   fetchUserPosts,
   fetchUserAlbum,
   fetchAlbumDetail,
   fetchPostComments,
+  createNewPost,
 };
 
 export default api;

@@ -21,7 +21,8 @@ function updateUsers({ setUsers }) {
     .then(users => setUsers(users));
 };
 
-function handleSeeUserPost(user, { setPosts, setAppState }) {
+function handleSeeUserPost(user, { setPosts, setAppState, setUserDetail }) {
+  setUserDetail(user);
   return api.fetchUserPosts(user.id)
     .then(userPosts => setPosts(userPosts))
     .then(() => setAppState(APP_STATE.SHOWING_USER_POSTS));
@@ -46,6 +47,7 @@ function viewUserList(setAppState) {
 function App() {
 
   const [users, setUsers] = useState([]);
+  const [userDetail, setUserDetail] = useState({});
   const [posts, setPosts] = useState([]);
   const [album, setAlbum] = useState([]);
   const [albumPictures, setAlbumPictures] = useState([]);
@@ -76,7 +78,7 @@ function App() {
             <div className="column">
               <UserList
                 users={users}
-                seeUserPost={(user) => handleSeeUserPost(user, { setPosts, setAppState })}
+                seeUserPost={(user) => handleSeeUserPost(user, { setPosts, setAppState, setUserDetail })}
                 seeUserAlbum={(user) => handleSeeUserAlbum(user, { setAlbum, setAppState })}
               />
             </div>
@@ -85,7 +87,7 @@ function App() {
 
         { appState === APP_STATE.SHOWING_USER_POSTS ?
           <div className="user__posts">
-            <Posts posts={posts} />
+            <Posts posts={posts} user={userDetail} />
           </div> : ''
         }
 
