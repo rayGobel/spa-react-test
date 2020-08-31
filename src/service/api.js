@@ -60,6 +60,17 @@ function createNewPost(jsonFormData) {
   .then(response => response.json())
 };
 
+function updatePost(postId, jsonFormData) {
+  return fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`, {
+      method: 'PUT',
+      body: JSON.stringify(jsonFormData),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8"
+      }
+    })
+    .then(response => response.json())
+};
+
 const api = {
   fetchUsers,
   fetchUserPosts,
@@ -67,6 +78,7 @@ const api = {
   fetchAlbumDetail,
   fetchPostComments,
   createNewPost,
+  updatePost,
 };
 
 export default api;

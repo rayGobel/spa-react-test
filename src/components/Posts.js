@@ -5,6 +5,7 @@ const COMP_STATE = {
   SHOWING_POST_LIST: 'showingPostList',
   SHOWING_POST_DETAIL: 'showingPostDetail',
   SHOWING_NEW_POST_FORM: 'showingNewPostForm',
+  SHOWING_EDIT_POST_FORM: 'showingEditPostForm',
   LOADING: 'loading',
 };
 
@@ -67,6 +68,11 @@ function seePostDetail(post, { setPostDetail, setComments, setCompState }) {
     .then(() => setCompState(COMP_STATE.SHOWING_POST_DETAIL));
 };
 
+function editPostDetail(post, { setPostDetail, setCompState }) {
+  setPostDetail(post);
+  setCompState(COMP_STATE.SHOWING_EDIT_POST_FORM);
+};
+
 function createNewPost({ setCompState }) {
   setCompState(COMP_STATE.SHOWING_NEW_POST_FORM);
 };
@@ -80,6 +86,9 @@ function postListItems(posts, ctx) {
         <div className="column">
           <a href="#" onClick={() => seePostDetail(post, { setComments, setPostDetail, setCompState })}>{ post.title }</a>
         </div>
+        <div className="column">
+          <a href="#" onClick={() => editPostDetail(post, { setPostDetail, setCompState })}>edit</a>
+        </div>
       </div>
     </li>
   );
@@ -88,7 +97,7 @@ function postListItems(posts, ctx) {
     <div>
       <a href="#" onClick={() => createNewPost({ setCompState })}>Create New</a>
       <ol>
-      {listItems}
+        {listItems}
       </ol>
     </div>
   );
@@ -130,6 +139,15 @@ function handleCreateNewPost(newPost, ctx) {
     .then(() => setCompState(COMP_STATE.SHOWING_POST_LIST));
 };
 
+function handleUpdatePost(updatedPost, ctx) {
+  console.log(updatedPost);
+  const { setCompState, setNotifState } = ctx;
+  setCompState(COMP_STATE.LOADING);
+  return api.updatePost(updatedPost.id, updatedPost)
+    .then((updatedPost) => setNotifState({ state: NOTIFICATION_STATE.SHOW, message: `Successfully updated post with ID: ${updatedPost.id}` }))
+    .then(() => setCompState(COMP_STATE.SHOWING_POST_LIST));
+};
+
 function PostList({ user, posts }) {
   const [lPosts,] = useState(posts);
   const [postDetail, setPostDetail] = useState({});
@@ -148,7 +166,9 @@ function PostList({ user, posts }) {
   let notification = '';
 
   if (notifState.state === NOTIFICATION_STATE.SHOW) {
-    notification = (<div>{ notifState.message }</div>);
+    notification = (
+      <div className="notification">{ notifState.message }</div>
+    );
   }
 
   let content;
@@ -186,6 +206,19 @@ function PostList({ user, posts }) {
         }
       />);
   }
+
+  if (compState === COMP_STATE.SHOWING_EDIT_POST_FORM) {
+    content = (
+      <PostForm
+        post={postDetail}
+        context={
+          {
+            submitNewPost: (updatedPost) => handleUpdatePost(updatedPost, { setCompState, setNotifState }),
+            cancelNewPost: () => setCompState(COMP_STATE.SHOWING_POST_LIST)
+          }
+        }
+      />);
+  };
 
   if (compState === COMP_STATE.LOADING) {
     return (
