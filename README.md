@@ -1,5 +1,7 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+An experiment in using React to create simple page
+
 ## Available Scripts
 
 In the project directory, you can run:
