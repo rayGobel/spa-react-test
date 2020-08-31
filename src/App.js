@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { Observable, Subscriber } from 'rxjs';
 import 'bulma/css/bulma.css';
+
+import UserList from './components/UserList';
 
 const APP_STATE = {
   INIT: 'init',
@@ -16,7 +19,7 @@ function fetchUsers() {
 };
 
 function fetchUserPosts(userId) {
-  if (userId) {
+  if (!userId) {
     const ErrNoUserId = new Error('No User ID specified for request: fetchPosts');
     return Promise.reject(ErrNoUserId);
   }
@@ -31,30 +34,29 @@ function updateUsers({ setUsers }) {
     .then(users => setUsers(users));
 };
 
-function handle(ev) {
-  console.log('clicked: ', ev);
+function handleSeeUserPost(user, setPosts) {
+  return fetchUserPosts(user.id)
+    .then(userPosts => setPosts(userPosts));
 };
 
-function PostButton({ user, handlePostClick }) {
-  return (
-    <a href="#" onClick={(ev) => { ev.preventDefault(); handlePostClick(user); }} >Posts</a>
-  );
-};
-
-function UserList({ users }) {
-  const listItems = users.map(user =>
-    <li key={user.id}>
-    { user.id } - { user.name } <PostButton user={user} handlePostClick={handle} />
+function PostList({ posts }) {
+  const listItems = posts.map(post => 
+    <li key={post.id}>
+      <h1>
+        { post.id } - { post.title }
+      </h1>
+      <p>
+        { post.body }
+      </p>
     </li>
   );
-  return (
-    <ul>{ listItems }</ul>
-  );
-}
+  return (<ul>{ listItems }</ul>);
+};
 
 function App() {
 
   const [users, setUsers] = useState([]);
+  const [posts, setPosts] = useState([]);
 
   useEffect(() => {
     updateUsers({ setUsers });
@@ -65,8 +67,11 @@ function App() {
       <main>
         <div className="columns">
           <div className="column">
-            { users.length ? <UserList users={users} /> : 'No Users' }
+            { users.length ? <UserList users={users} seeUserPost={(user) => handleSeeUserPost(user, setPosts)} /> : 'No Users' }
           </div>
+        </div>
+        <div className="user__posts">
+            { posts.length ? <PostList posts={posts} /> : 'No Posts' }
         </div>
       </main>
     </div>
