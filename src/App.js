@@ -13,7 +13,6 @@ const APP_STATE = {
   SHOWING_USER_LIST: 'showUserList',
   SHOWING_USER_POSTS: 'showUserPosts',
   SHOWING_USER_ALBUMS: 'showUserAlbums',
-  SHOWING_POST_DETAIL: 'showPostDetail',
   SHOWING_ALBUM_ENTRIES: 'showAlbumEntries',
 };
 

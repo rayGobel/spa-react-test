@@ -38,11 +38,23 @@ function fetchAlbumDetail(albumId) {
     .then(res => res.json());
 };
 
+function fetchPostComments(postId) {
+  if (!postId) {
+    const ErrNoPostId = new Error('No Post ID specified for request: fetchPostComments');
+    return Promise.reject(ErrNoPostId);
+  }
+
+  const url = `https://jsonplaceholder.typicode.com/posts/${postId}/comments`;
+  return fetch(url)
+    .then(res => res.json());
+};
+
 const api = {
   fetchUsers,
   fetchUserPosts,
   fetchUserAlbum,
   fetchAlbumDetail,
+  fetchPostComments,
 };
 
 export default api;
